@@ -1,60 +1,31 @@
-import React, { useState } from 'react'
+import * as THREE from 'three'
+import { useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Box, Sphere } from '@react-three/drei'
-import { DirectionalLight, MeshStandardMaterial } from 'three'
-import { OrbitControls } from '@react-three/drei'
-import { useRef } from 'react'
-import { SkyGeometry } from 'three/examples/jsm/Addons.js'
+import { MeshDistortMaterial, GradientTexture, useCursor } from '@react-three/drei'
 
-const Cube = ({ position, size, color }) => {
+function Flag() {
   const ref = useRef()
-
-  const [hovered, setHovered] = useState(false)
-  const [clicked, setClicked] = useState(false)
-  const [scale, setScale] = useState(1)
-  useFrame((state, delta) => {
-    const speed = hovered ? 10 : 0.5
-    ref.current.rotation.y += delta * speed;
-    // ref.current.position.z += Math.sin(state.clock.getElapsedTime()) / 20
+  const [hovered, hover] = useState(false)
+  useCursor(hovered)
+  useFrame(() => {
+    ref.current.distort = THREE.MathUtils.lerp(ref.current.distort, hovered ? 0.3 : 0, hovered ? 0.05 : 0.01)
   })
-
   return (
-    <mesh
-      position={position}
-      ref={ref}
-      onPointerEnter={(event) => (event.stopPropagation(), setHovered(true))} 
-      onPointerLeave={(event) => (event.stopPropagation(), setHovered(false))}
-      onClick={(event) => (event.stopPropagation(), setClicked(!clicked))}
-      scale={clicked ? 2.5 : 1}
-      onPointerDown={(event) => (event.stopPropagation(), setScale(2.5))}
-      onPointerUp={(event) => (event.stopPropagation(), setScale(1))}
-      >
-      <sphereGeometry args={size} />
-      <meshStandardMaterial
-        color={color}
-        wireframe={true}
-        
-      />
+    <mesh position={[0, 0, 1]} onPointerOver={() => hover(true)} onPointerOut={() => hover(false)} scale={[2, 4, 1]}>
+      <planeGeometry args={[1, 1, 32, 32]} />
+      <MeshDistortMaterial ref={ref} speed={6} factor={1.2}>
+      <GradientTexture stops={[1, 0.6, 0]} colors={['#2d6a4f', '#52b788', '#d8f3dc']} size={200} />
+
+      </MeshDistortMaterial>
     </mesh>
   )
 }
 
-const App = () => {
+export default function App() {
   return (
     <Canvas>
-      <OrbitControls />
-      {/* <directionalLight position={[0,0,2]}/> */}
-      <ambientLight intensity={0.8} />
-      <Cube position={[0, 0, 0]} size={[1]} color={"burlywood"} />
-
-      {/* <group  position={[-1,-1,1]}>
-      <Cube position={[0,0,0]} size={[1,1,1]} color={"blue"}/>
-      <Cube position={[0,2,0]} size={[1,1,1]} color={"red"}/>
-      <Cube position={[3,0,0]} size={[1,1,1]} color={"green"}/>
-      <Cube position={[3,2,0]} size={[1,1,1]} color={"yellow"}/>
-      </group> */}
+      <ambientLight />
+      <Flag />
     </Canvas>
   )
 }
-
-export default App
