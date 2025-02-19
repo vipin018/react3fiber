@@ -15,14 +15,6 @@ const App = () => {
   return (
     <div className="w-full text-white h-full bg-gray-900">
       <Leva collapsed /> {/* Leva Panel */}
-      <div className="w-full h-full">
-        <img
-          className="w-full h-full object-cover object-center"
-          src="https://images.unsplash.com/photo-1524502397800-2eeaad7c3fe5?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fG1vZGVsfGVufDB8fDB8fHwy"
-          alt=""
-        />
-      </div>
-
       {/* First Canvas - Rotating Cube with Dynamic Environment */}
       <div className="w-1/2 h-full bg-blue-800">
         <Canvas className="w-full h-full">
