@@ -12,7 +12,7 @@ const App = () => {
       </div>
       <div className='w-1/2 h-full bg-blue-800'>
         <Canvas className='w-full h-full'>
-          {/* <mesh>
+          <mesh>
           <boxGeometry args={[2, 2, 2]} />
           <meshStandardMaterial
             roughness={0}
@@ -20,7 +20,7 @@ const App = () => {
             toneMapped={true} // this will make the scene look more realistic it has to be true or if it is false the scene will look like a cartoon
           />
           <OrbitControls />
-        </mesh> */}
+        </mesh>
           <Environment preset="studio" />
           <Rotate />
         </Canvas>
