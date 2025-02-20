@@ -1,23 +1,40 @@
 import React from "react";
-import { Canvas, useLoader } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment, useGLTF } from "@react-three/drei";
 import { Leva, useControls } from "leva";
-import * as THREE from "three";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import { EffectComposer, Bloom, DepthOfField, Noise, Vignette } from "@react-three/postprocessing";
 import Model from "./Model";
-// import Cube from "./Cube";
-
-
 
 const App = () => {
-  const { environment, bloom, bloomIntensity, bloomThreshold, bloomMipmapBlur, bloomKernelSize, bloomSmoothing } = useControls("Scene Settings", {
+  // ✅ Scene & Post-Processing Controls
+  const { environment } = useControls("Scene Settings", {
     environment: { options: ["studio", "sunset", "forest", "city", "night", "dawn", "dusk"] },
-    bloom: { value: true, label: "Bloom" },
-    bloomIntensity: { value: 0.1, min: 0, max: 1, step: 0.01, label: "Bloom Intensity" },
-    bloomThreshold: { value: 0.5, min: 0, max: 1, step: 0.01, label: "Bloom Threshold" },
-    bloomMipmapBlur: { value: true, label: "Bloom Mipmap Blur" },
-    bloomKernelSize: { value: 1.5, min: 0, max: 10, step: 0.1, label: "Bloom Kernel Size" },
-    bloomSmoothing: { value: 0.025, min: 0, max: 1, step: 0.001, label: "Bloom Smoothing" },
+  });
+
+  const { enableBloom, bloomIntensity, bloomThreshold, bloomSmoothing, bloomColor } = useControls("Bloom Settings", {
+    enableBloom: { value: true, label: "Enable Bloom" },
+    bloomIntensity: { value: 0.5, min: 0, max: 3, step: 0.01, label: "Intensity" },
+    bloomThreshold: { value: 0.5, min: 0, max: 1, step: 0.01, label: "Threshold" },
+    bloomSmoothing: { value: 0.1, min: 0, max: 1, step: 0.01, label: "Smoothing" },
+    bloomColor: { value: "#ffffff", label: "Bloom Color" },
+  });
+
+  const { enableDOF, focusDistance, focalLength, bokehScale } = useControls("Depth of Field", {
+    enableDOF: { value: true, label: "Enable DOF" },
+    focusDistance: { value: 0, min: 0, max: 1, step: 0.01, label: "Focus Distance" },
+    focalLength: { value: 0.02, min: 0, max: 0.1, step: 0.001, label: "Focal Length" },
+    bokehScale: { value: 2, min: 0, max: 10, step: 0.1, label: "Bokeh Scale" },
+  });
+
+  const { enableNoise, noiseOpacity } = useControls("Noise Settings", {
+    enableNoise: { value: true, label: "Enable Noise" },
+    noiseOpacity: { value: 0.02, min: 0, max: 1, step: 0.01, label: "Opacity" },
+  });
+
+  const { enableVignette, vignetteOffset, vignetteDarkness } = useControls("Vignette Settings", {
+    enableVignette: { value: true, label: "Enable Vignette" },
+    vignetteOffset: { value: 0.1, min: 0, max: 1, step: 0.01, label: "Offset" },
+    vignetteDarkness: { value: 1.1, min: 0, max: 3, step: 0.1, label: "Darkness" },
   });
 
   return (
@@ -25,17 +42,29 @@ const App = () => {
       <Leva collapsed />
       <Canvas className="w-full h-full">
         <OrbitControls />
-        {/* <Cube  />   */}
         <Model />
         <Environment preset={environment} />
+        
+        {/* ✅ Post-processing Effects with Dynamic Controls */}
         <EffectComposer>
-          <Bloom 
-          intensity={bloom ? bloomIntensity : 0}
-           threshold={bloomThreshold}
-           mipmapBlur={bloomMipmapBlur}
-           luminanceThreshold={bloomThreshold}
-           luminanceSmoothing={bloomSmoothing}
-           />
+          {enableDOF && (
+            <DepthOfField 
+              focusDistance={focusDistance} 
+              focalLength={focalLength} 
+              bokehScale={bokehScale} 
+              height={480} 
+            />
+          )}
+          {enableBloom && (
+            <Bloom
+              intensity={bloomIntensity}
+              threshold={bloomThreshold}
+              luminanceSmoothing={bloomSmoothing}
+              color={bloomColor}
+            />
+          )}
+          {enableNoise && <Noise opacity={noiseOpacity} />}
+          {enableVignette && <Vignette eskil={false} offset={vignetteOffset} darkness={vignetteDarkness} />}
         </EffectComposer>
       </Canvas>
     </div>

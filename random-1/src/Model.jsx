@@ -4,13 +4,13 @@ import { useFrame } from "@react-three/fiber";
 import { useControls } from "leva";
 
 const Model = () => {
-  const { scene } = useGLTF("/model.glb"); // Load 3D model
+  const { scene } = useGLTF("/glow.glb"); // Load 3D model
   const modelRef = useRef(); // Reference for rotation
 
   // 🔄 Animate rotation
   useFrame(({ clock }) => {
     if (modelRef.current) {
-      modelRef.current.rotation.y = Math.cos(clock.getElapsedTime()*2); // Adjust speed if needed
+      modelRef.current.rotation.y = clock.getElapsedTime(); // Adjust speed if needed
     }
   });
 
@@ -26,7 +26,7 @@ const Model = () => {
   return (
     <>
       {/* ✅ 3D Model with Rotation */}
-      <primitive ref={modelRef} object={scene} scale={30} position={[0, 0, 0]} />
+      <primitive ref={modelRef} object={scene} scale={1.5} position={[0, 0, 0]} />
 
       {/* ✅ Light with Dynamic Controls */}
       <directionalLight color={color} intensity={intensity} position={[x, y, z]} castShadow />
