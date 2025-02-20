@@ -1,40 +1,33 @@
 import React from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
-import { OrbitControls, Environment } from "@react-three/drei";
+import { OrbitControls, Environment, useGLTF } from "@react-three/drei";
 import { Leva, useControls } from "leva";
 import * as THREE from "three";
-import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
+// import Model from "./Model";
+import Cube from "./Cube";
 
-const Cube = () => {
-  // ✅ Load Texture for Cube
-  const texture = useLoader(THREE.TextureLoader, "/text.jpg"); // Replace with your texture
 
-  return (
-    <mesh>
-      <boxGeometry args={[2, 2, 2]} />
-      <meshStandardMaterial map={texture} />
-    </mesh>
-  );
-};
 
 const App = () => {
-  const {
-    environment,
-  } = useControls("Scene Settings", {
+  const { environment } = useControls("Scene Settings", {
     environment: { options: ["studio", "sunset", "forest", "city"] },
   });
+
   return (
     <div className="w-full text-white h-screen bg-gray-900">
       <Leva collapsed />
-      <Canvas
-        className="w-full h-full"
-      >
+      <Canvas className="w-full h-full">
         <OrbitControls />
-        <Cube /> {/* ✅ Render Cube with Texture */}
+        {/* <Model /> ✅ Load the GLB Model */}
+        <Cube  />  
         <Environment preset={environment} />
       </Canvas>
     </div>
   );
 };
+
+// ✅ Preload the Model for Performance
+useGLTF.preload("/model.glb");
 
 export default App;
