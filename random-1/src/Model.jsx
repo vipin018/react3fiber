@@ -14,23 +14,21 @@ const Model = () => {
     }
   });
 
-  // ✅ Light Controls from Leva
-  const { color, intensity, x, y, z } = useControls("Light Settings", {
-    color: { value: "#ffffff", label: "Color" },
-    intensity: { value: 2, min: 0, max: 10, step: 0.1, label: "Intensity" },
-    x: { value: 5, min: -10, max: 10, step: 0.1, label: "X Position" },
-    y: { value: 5, min: -10, max: 10, step: 0.1, label: "Y Position" },
-    z: { value: 5, min: -10, max: 10, step: 0.1, label: "Z Position" },
+  // ✅ Position & Scale Controls using Leva
+  const { x, y, z, scale } = useControls("Model Settings", {
+    x: { value: 0, min: -10, max: 10, step: 0.1, label: "X Position" },
+    y: { value: 0, min: -10, max: 10, step: 0.1, label: "Y Position" },
+    z: { value: 0, min: -10, max: 10, step: 0.1, label: "Z Position" },
+    scale: { value: 1.5, min: 0.1, max: 5, step: 0.1, label: "Scale" },
   });
 
   return (
-    <>
-      {/* ✅ 3D Model with Rotation */}
-      <primitive ref={modelRef} object={scene} scale={1.5} position={[0, 0, 0]} />
-
-      {/* ✅ Light with Dynamic Controls */}
-      <directionalLight color={color} intensity={intensity} position={[x, y, z]} castShadow />
-    </>
+    <primitive
+      ref={modelRef}
+      object={scene}
+      scale={scale}
+      position={[x, y, z]}
+    />
   );
 };
 

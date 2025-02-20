@@ -11,6 +11,10 @@ const App = () => {
     environment: { options: ["studio", "sunset", "forest", "city", "night", "dawn", "dusk"] },
   });
 
+  const { enableEffects } = useControls("Post-Processing", {
+    enableEffects: { value: true, label: "Enable Effects" }, // ✅ Checkbox to toggle all effects
+  });
+
   const { enableBloom, bloomIntensity, bloomThreshold, bloomSmoothing, bloomColor } = useControls("Bloom Settings", {
     enableBloom: { value: true, label: "Enable Bloom" },
     bloomIntensity: { value: 0.5, min: 0, max: 3, step: 0.01, label: "Intensity" },
@@ -45,27 +49,29 @@ const App = () => {
         <Model />
         <Environment preset={environment} />
         
-        {/* ✅ Post-processing Effects with Dynamic Controls */}
-        <EffectComposer>
-          {enableDOF && (
-            <DepthOfField 
-              focusDistance={focusDistance} 
-              focalLength={focalLength} 
-              bokehScale={bokehScale} 
-              height={480} 
-            />
-          )}
-          {enableBloom && (
-            <Bloom
-              intensity={bloomIntensity}
-              threshold={bloomThreshold}
-              luminanceSmoothing={bloomSmoothing}
-              color={bloomColor}
-            />
-          )}
-          {enableNoise && <Noise opacity={noiseOpacity} />}
-          {enableVignette && <Vignette eskil={false} offset={vignetteOffset} darkness={vignetteDarkness} />}
-        </EffectComposer>
+        {/* ✅ Toggle EffectsComposer with enableEffects checkbox */}
+        {enableEffects && (
+          <EffectComposer>
+            {enableDOF && (
+              <DepthOfField 
+                focusDistance={focusDistance} 
+                focalLength={focalLength} 
+                bokehScale={bokehScale} 
+                height={480} 
+              />
+            )}
+            {enableBloom && (
+              <Bloom
+                intensity={bloomIntensity}
+                threshold={bloomThreshold}
+                luminanceSmoothing={bloomSmoothing}
+                color={bloomColor}
+              />
+            )}
+            {enableNoise && <Noise opacity={noiseOpacity} />}
+            {enableVignette && <Vignette eskil={false} offset={vignetteOffset} darkness={vignetteDarkness} />}
+          </EffectComposer>
+        )}
       </Canvas>
     </div>
   );
